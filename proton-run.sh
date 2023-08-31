@@ -7,13 +7,29 @@ else
   read executable
 fi
 
-if [[ $2 ]]; then
-  SteamAppId=480
+
+if [[ -z $2 ]]; then
+
+  while true; do
+    echo "Is this a steam game? y/n"
+    read -n 1 is_steam_game
+    if [[ $is_steam_game == 'y' ]]; then
+      echo ""
+      id=$(steam-id-fetcher)
+      echo ""
+      break
+    elif [[ $is_steam_game == 'n' ]]; then
+      id=480
+      break
+    else
+      echo ""
+      echo "Only y/n answer, please"
+      echo ""
+    fi
+  done
+
 else
-  echo "Please provide the SteamAppId for the game: "
-  read SteamAppId
+  id=$2
 fi
 
-STEAM_COMPAT_DATA_PATH=$HOME/proton/compatdata/
-STEAM_COMPAT_CLIENT_INSTALL_PATH=/
-~/proton/GE-Proton8-13/proton waitforexitandrun executable
+SteamAppId=$id STEAM_COMPAT_DATA_PATH=$HOME/proton/compatdata/ STEAM_COMPAT_CLIENT_INSTALL_PATH=/ ~/proton/GE-Proton8-13/proton waitforexitandrun $executable
